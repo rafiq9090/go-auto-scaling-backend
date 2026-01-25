@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/rafiq9090/go-auto-scaling-backend/internal/cache"
+	"github.com/rafiq9090/go-auto-scaling-backend/internal/db"
 )
 
 func main() {
@@ -12,7 +15,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-
+	_ = db.NewPostgres()
+	_ = cache.NewRedis()
 	mux := http.NewServeMux()
 
 	// Health check (Kubernetes needs this)
@@ -22,7 +26,7 @@ func main() {
 	})
 
 	// Simple api endpoint
-	mux.HandleFunc("/api/hello", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(50 * time.Millisecond)
 		w.Write([]byte("Hello from Go Auto Scaling Backend!"))
 	})
