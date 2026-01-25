@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +12,12 @@ import (
 )
 
 func main() {
+	instanceID := os.Getenv("INSTANCE_ID")
+	if instanceID == "" {
+		instanceID = "unknown"
+	}
+	log.Printf("Starting server on instance %s\n", instanceID)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -28,7 +35,7 @@ func main() {
 	// Simple api endpoint
 	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(50 * time.Millisecond)
-		w.Write([]byte("Hello from Go Auto Scaling Backend!"))
+		fmt.Fprintf(w, "Hello from Go Auto Scaling Backend! (Instance: %s)", instanceID)
 	})
 
 	server := &http.Server{
