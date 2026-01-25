@@ -21,10 +21,10 @@ func main() {
 		w.Write([]byte("OK"))
 	})
 
-	// Simple API endpoint
-	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(50 * time.Millisecond) // simulate work
-		w.Write([]byte("Hello from Go Auto Scaling Backend "))
+	// Simple api endpoint
+	mux.HandleFunc("/api/hello", func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(50 * time.Millisecond)
+		w.Write([]byte("Hello from Go Auto Scaling Backend!"))
 	})
 
 	server := &http.Server{
