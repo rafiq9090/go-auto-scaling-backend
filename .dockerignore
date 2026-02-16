@@ -1,0 +1,16 @@
+.git
+.idea
+.vscode
+main
+main_test
+*.exe
+*.test
+debug
+node_modules
+dist
+test
+docker-compose.yml
+Dockerfile
+README.md
+LICENSE
+coverage.out

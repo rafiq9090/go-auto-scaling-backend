@@ -1,14 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rafiq9090/go-auto-scaling-backend/internal/cache"
 	"github.com/rafiq9090/go-auto-scaling-backend/internal/db"
+	"github.com/rafiq9090/go-auto-scaling-backend/internal/model"
+	"github.com/rafiq9090/go-auto-scaling-backend/internal/route"
 )
 
 func main() {
@@ -22,25 +24,33 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
-	_ = db.NewPostgres()
+	database := db.NewPostgres()
+	if err := database.AutoMigrate(&model.Task{}); err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
 	_ = cache.NewRedis()
-	mux := http.NewServeMux()
 
-	// Health check (Kubernetes needs this)
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+	// Initialize Gin router
+	r := gin.Default()
+
+	// Health check
+	r.GET("/health", func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
 	})
 
 	// Simple api endpoint
-	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+	r.GET("/hello", func(c *gin.Context) {
 		time.Sleep(50 * time.Millisecond)
-		fmt.Fprintf(w, "Hello from Go Auto Scaling Backend! (Instance: %s)", instanceID)
+		c.String(http.StatusOK, "Hello from Go Auto Scaling Backend! (Instance: %s)", instanceID)
 	})
+
+	// Setup Routes
+	api := r.Group("/api")
+	route.SetupRoute(api)
 
 	server := &http.Server{
 		Addr:         ":" + port,
-		Handler:      mux,
+		Handler:      r,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  30 * time.Second,
