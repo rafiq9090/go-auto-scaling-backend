@@ -20,3 +20,17 @@ func (TaskRepository) GetAll(ctx context.Context) ([]model.Task, error) {
 	err := db.DB.WithContext(ctx).Find(&tasks).Error
 	return tasks, err
 }
+
+func (TaskRepository) GetByID(ctx context.Context, id string) (model.Task, error) {
+	var task model.Task
+	err := db.DB.WithContext(ctx).First(&task, id).Error
+	return task, err
+}
+
+func (TaskRepository) Update(ctx context.Context, id string, task *model.Task) error {
+	return db.DB.WithContext(ctx).Where("id = ?", id).Updates(task).Error
+}
+
+func (TaskRepository) Delete(ctx context.Context, id string) error {
+	return db.DB.WithContext(ctx).Delete(&model.Task{}, id).Error
+}

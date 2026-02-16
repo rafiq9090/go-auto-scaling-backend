@@ -9,4 +9,7 @@ func SetupTaskRoute(route *gin.RouterGroup) {
 	tasks := route.Group("/tasks")
 	tasks.GET("/", handler.GetAllTasks)
 	tasks.POST("/", handler.CreateTask)
+	tasks.GET("/:id", handler.GetTaskByID)
+	tasks.PUT("/:id", handler.UpdateTask)
+	tasks.DELETE("/:id", handler.DeleteTask)
 }

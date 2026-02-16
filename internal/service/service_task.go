@@ -18,3 +18,15 @@ func (TaskService) Create(ctx context.Context, task *model.Task) error {
 func (TaskService) GetAll(ctx context.Context) ([]model.Task, error) {
 	return repositry.Task.GetAll(ctx)
 }
+
+func (TaskService) GetByID(ctx context.Context, id string) (model.Task, error) {
+	return repositry.Task.GetByID(ctx, id)
+}
+
+func (TaskService) Update(ctx context.Context, id string, task *model.Task) error {
+	return repositry.Task.Update(ctx, id, task)
+}
+
+func (TaskService) Delete(ctx context.Context, id string) error {
+	return repositry.Task.Delete(ctx, id)
+}
