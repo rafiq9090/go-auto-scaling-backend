@@ -44,7 +44,7 @@ func GetTaskByID(c *gin.Context) {
 }
 
 func UpdateTask(c *gin.Context) {
-	id := c.Param("id")
+	// id := c.Param("id")
 	var input dto.UpdateTaskRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
